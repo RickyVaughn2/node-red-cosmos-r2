@@ -1,0 +1,120 @@
+<script type="text/javascript">
+    RED.nodes.registerType("cosmos-r2", {
+      category: "database",
+      color: "#E9967A",
+      defaults: {
+        name: { value: "" },
+        uri: { value: "", required: true },
+        key: { value: "", required: true },
+        databaseId: { value: "", required: true },
+        containerId: { value: "", required: true },
+      },
+      inputs: 1,
+      outputs: 1,
+      icon: "file.png",
+      label: function () {
+        return this.name || "cosmos-r2";
+      },
+    });
+  </script>
+  
+  <script type="text/html" data-template-name="cosmos-r2">
+    <div class="form-row">
+      <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+      <label for="node-input-uri"><i class="icon-globe"></i> URI</label>
+      <input type="text" id="node-input-uri" placeholder="URI">
+    </div>
+    <div class="form-row">
+      <label for="node-input-key"><i class="icon-key"></i> Key</label>
+      <input type="text" id="node-input-key" placeholder="Key">
+    </div>
+    <div class="form-row">
+      <label for="node-input-databaseId"><i class="icon-database"></i> Database ID</label>
+      <input type="text" id="node-input-databaseId" placeholder="Database ID">
+    </div>
+    <div class="form-row">
+      <label for="node-input-containerId"><i class="icon-folder"></i> Container ID</label>
+      <input type="text" id="node-input-containerId" placeholder="Container ID">
+    </div>
+  </script>
+  
+  <script type="text/html" data-help-name="cosmos-r2">
+    <h3>Description</h3>
+    <p>A Node-RED custom node that connects to a Cosmos DB and performs create, update, read, delete, and upsert operations.</p>
+    
+    <h3>Configuration</h3>
+    <ul>
+      <li><b>Name</b>: (Optional) A custom name for the node.</li>
+      <li><b>URI</b>: The Cosmos DB endpoint URI.</li>
+      <li><b>Key</b>: The Cosmos DB key.</li>
+      <li><b>Database ID</b>: The Cosmos DB database ID.</li>
+      <li><b>Container ID</b>: The Cosmos DB container ID.</li>
+    </ul>
+  
+    <h3>Input</h3>
+    <p>The input message must contain the following properties:</p>
+    <ul>
+      <li><b>operation</b>: The type of operation to perform, either "create", "read", "update", "delete", or "upsert".</li>
+      <li><b>item</b>: (Optional) The item to create, update, delete, or upsert. Required for "create", "update", "delete", and "upsert" operations.</li>
+      <li><b>query</b>: (Optional) A query to filter items for "read" operation. If not provided, all items will be retrieved.</li>
+    </ul>
+  
+    <h3>Output</h3>
+    <p>The output message will contain the following property:</p>
+    <ul>
+      <li><b>payload</b>: The result of the operation, such as created, read, updated, deleted, or upserted items.</li>
+    </ul>
+  
+    <h3>Examples</h3>
+    <p>Create an item:</p>
+    <pre>
+    {
+      "operation": "create",
+      "item": {
+        "id": "1",
+        "name": "Example Item"
+      }
+    }
+    </pre>
+    <p>Read items:</p>
+    <pre>
+    {
+      "operation": "read",
+      "query": "SELECT * FROM c WHERE c.name = 'Example Item'"
+    }
+    </pre>
+    <p>Update an item:</p>
+    <pre>
+    {
+      "operation": "update",
+      "item": {
+        "id": "1",
+        "name": "Updated Item"
+      }
+    }
+    </pre>
+    <p>Delete an item:</p>
+    <pre>
+    {
+      "operation": "delete",
+      "item": {
+        "id": "1"
+      }
+    }
+    </pre>
+    <p>Upsert an item:</p>
+    <pre>
+    {
+      "operation": "upsert",
+      "item": {
+        "id": "1",
+        "name": "Upserted Item"
+      }
+    }
+    </pre>
+  </script>
+  
+  
