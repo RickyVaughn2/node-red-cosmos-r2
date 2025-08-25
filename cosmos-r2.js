@@ -5,8 +5,8 @@ module.exports = function (RED) {
     RED.nodes.createNode(this, config);
     const node = this;
 
-    const uri = config.uri;
-    const key = config.key;
+    const uri = this.credentials.uri;
+    const key = this.credentials.key;
     const databaseId = config.databaseId;
     const containerId = config.containerId;
 
@@ -63,6 +63,11 @@ module.exports = function (RED) {
     });
   }
 
-  RED.nodes.registerType("cosmos-r2", CosmosR2Node);
+  RED.nodes.registerType("cosmos-r2", CosmosR2Node,{
+    credentials: {
+      uri: { type:"text" },
+      key: { type:"password" }
+    }
+  });
 };
 
