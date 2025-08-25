@@ -1,6 +1,6 @@
 {
     "name": "node-red-cosmos-r2",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "A Node-RED custom node that connects to a Cosmos DB and performs create, update, read, delete, and upsert operations.",
     "main": "cosmos-r2.js",
     "keywords": [
