@@ -5,18 +5,45 @@ module.exports = function (RED) {
     RED.nodes.createNode(this, config);
     const node = this;
 
-    const uri = config.uri;
-    const key = config.key;
+    const uri = this.credentials.uri;
+    const key = this.credentials.key;
     const databaseId = config.databaseId;
     const containerId = config.containerId;
 
-    const client = new CosmosClient({ endpoint: uri, key: key });
-    const container = client
-      .database(databaseId)
-      .container(containerId);
+    // Defer client creation until needed. This avoids URI errors from Cosmos when starting/managing flow.
+    let client = null;
+    let container = null;
+
+    function initializeClient() {
+      if (!uri || typeof uri !== 'string' || !uri.startsWith('https://')) {
+        throw new Error("Invalid or missing Cosmos DB URI. Expected format: https://your-account.documents.azure.com:443/");
+      }
+      if (!key) {
+        throw new Error("Missing Cosmos DB key");
+      }
+      if (!databaseId) {
+        throw new Error("Missing database ID");
+      }
+      if (!containerId) {
+        throw new Error("Missing container ID");
+      }
+
+      client = new CosmosClient({ endpoint: uri, key: key });
+      container = client.database(databaseId).container(containerId);
+    }
 
     node.on("input", async function (msg) {
       try {
+        // Initialize client on first use
+        if (!container) {
+          try {
+            initializeClient();
+          } catch (initError) {
+            node.error("Cosmos configuration error: " + initError.message);
+            return;
+          }
+        }
+
         const operation = msg.operation;
         const item = msg.item;
 
@@ -63,6 +90,11 @@ module.exports = function (RED) {
     });
   }
 
-  RED.nodes.registerType("cosmos-r2", CosmosR2Node);
+  RED.nodes.registerType("cosmos-r2", CosmosR2Node,{
+    credentials: {
+      uri: { type:"text" },
+      key: { type:"password" }
+    }
+  });
 };
 
