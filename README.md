@@ -96,6 +96,33 @@ Upsert an item:
 }
 ```
 
+## Developer Tools
+
+A Dockerfile and sample flow are provided to test the functionality of the module.
+
+### Prerequisites
+
+- Docker
+- npm
+
+### Installation
+
+1. Install module dependencies:
+
+   ```
+   cd {path/to/repo}
+   npm install
+   ```
+
+1. Create Docker container:
+
+   ```
+   cd ./development_tools/docker
+   docker-compose up
+   ```
+
+1. Access the Node-RED flow at http://localhost:1880/.
+
 ## License
 
 [GPL 3.0](LICENSE)
