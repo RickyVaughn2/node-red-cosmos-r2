@@ -1,0 +1,478 @@
+[
+    {
+        "id": "f6f2187d.f17ca8",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "84d9bc7bd695ff2f",
+        "type": "cosmos-r2",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "databaseId": "ae",
+        "containerId": "events-staging-1",
+        "x": 550,
+        "y": 300,
+        "wires": [
+            [
+                "e0d875ae9ba7f6c3"
+            ]
+        ]
+    },
+    {
+        "id": "596580f8a2f60d3e",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 100,
+        "wires": [
+            [
+                "eb98d16476986a5d"
+            ]
+        ]
+    },
+    {
+        "id": "eb98d16476986a5d",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Create Item",
+        "func": "// Creates a new item\n\nconst item = {\n    id: \"testItem1\",\n    systemId: \"partition1\", // Replace key with container partition key\n    description: \"desc1\"\n};\n\nmsg.operation = \"create\";\nmsg.item = item;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 100,
+        "wires": [
+            [
+                "84d9bc7bd695ff2f"
+            ]
+        ]
+    },
+    {
+        "id": "e0d875ae9ba7f6c3",
+        "type": "debug",
+        "z": "f6f2187d.f17ca8",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 720,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "9159b4a7d8f784d8",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 140,
+        "wires": [
+            [
+                "606cb75032f5bbb8"
+            ]
+        ]
+    },
+    {
+        "id": "606cb75032f5bbb8",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Read Item",
+        "func": "// Returns item for a given ID\n\nmsg.operation = \"read\";\n\nmsg.query = \"SELECT * FROM c WHERE c.id = 'testItem1'\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 140,
+        "wires": [
+            [
+                "84d9bc7bd695ff2f"
+            ]
+        ]
+    },
+    {
+        "id": "07ece93a93a14491",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 180,
+        "wires": [
+            [
+                "d7af6dc8409734b9"
+            ]
+        ]
+    },
+    {
+        "id": "d7af6dc8409734b9",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Update Item",
+        "func": "// Updates description of item\n// Requires ID and partition key of item\n// msg.partitionKey must match item key\n\nconst updatedItem = {\n    id: \"testItem1\",\n    systemId: \"partition1\", // Replace key with container partition key\n    description: \"desc2\"\n};\n\nmsg.operation = \"update\";\nmsg.partitionKey = \"partition1\";\nmsg.item = updatedItem;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 180,
+        "wires": [
+            [
+                "84d9bc7bd695ff2f"
+            ]
+        ]
+    },
+    {
+        "id": "d3ef4be85fc1f7fc",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 220,
+        "wires": [
+            [
+                "4f06a90efe86daa5"
+            ]
+        ]
+    },
+    {
+        "id": "4f06a90efe86daa5",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Delete Item",
+        "func": "// Updates description of item\n// Requires ID of item\n// msg.partitionKey must match item key\n\nconst itemToDelete = {\n    id: \"testItem1\"\n};\n\nmsg.operation = \"delete\";\nmsg.partitionKey = \"partition1\";\nmsg.item = itemToDelete;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 220,
+        "wires": [
+            [
+                "84d9bc7bd695ff2f"
+            ]
+        ]
+    },
+    {
+        "id": "ff31d7702075e83c",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 260,
+        "wires": [
+            [
+                "086d74ed3350be8f"
+            ]
+        ]
+    },
+    {
+        "id": "086d74ed3350be8f",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Upsert Item (New)",
+        "func": "// Update item if it exists or create new one if not\n// This flow tests the creation of a new item via upsert\n// Requires ID and partition key of item\n\nconst item = {\n    id: \"testItem2\",\n    systemId: \"partition2\", // Replace key with container partition key\n    description: \"desc1\"\n};\n\nmsg.operation = \"upsert\";\nmsg.item = item;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 260,
+        "wires": [
+            [
+                "84d9bc7bd695ff2f"
+            ]
+        ]
+    },
+    {
+        "id": "411691eb28ba413b",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 380,
+        "wires": [
+            [
+                "aef75db839222e87"
+            ]
+        ]
+    },
+    {
+        "id": "aef75db839222e87",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Batch Create",
+        "func": "// Bulk create items\n// Requires ID and partition key of item\n// All item keys and msg.partitionKey must match\n\nconst items = [\n    {id: \"testItem3\",\n    systemId: \"partition3\", // Replace key with container partition key\n    description: \"desc1\"},\n    {id: \"testItem4\",\n    systemId: \"partition3\", // Replace key with container partition key\n    description: \"desc1\"},\n    {id: \"testItem5\",\n    systemId: \"partition3\", // Replace key with container partition key\n    description: \"desc1\"},\n]\n\nmsg.operation = 'batch-create';\nmsg.items = items;\nmsg.partitionKey = \"partition3\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 380,
+        "wires": [
+            [
+                "84d9bc7bd695ff2f"
+            ]
+        ]
+    },
+    {
+        "id": "a7d7b84a98b0a0b4",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 300,
+        "wires": [
+            [
+                "90dd31010cc9d91d"
+            ]
+        ]
+    },
+    {
+        "id": "90dd31010cc9d91d",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Upsert Item (Existing)",
+        "func": "// Update item if it exists or create new one if not\n// This flow tests the update of an existing item via upsert\n// Requires ID and partition key of item\n\nconst item = {\n    id: \"testItem2\",\n    systemId: \"partition2\", // Replace key with container partition key\n    description: \"desc2\"\n};\n\nmsg.operation = \"upsert\";\nmsg.item = item;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 300,
+        "wires": [
+            [
+                "84d9bc7bd695ff2f"
+            ]
+        ]
+    },
+    {
+        "id": "90f89f7fc661b43e",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 460,
+        "wires": [
+            [
+                "32d860ef38d14b27"
+            ]
+        ]
+    },
+    {
+        "id": "32d860ef38d14b27",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Batch Update",
+        "func": "// Bulk update items\n// Requires ID and partition key of item\n// All item keys and msg.partitionKey must match\n\nconst items = [\n    {id: \"testItem4\",\n    systemId: \"partition3\", // Replace key with container partition key\n    description: \"desc2\"},\n    {id: \"testItem5\",\n    systemId: \"partition3\", // Replace key with container partition key\n    description: \"desc2\"},\n]\n\nmsg.operation = 'batch-update';\nmsg.items = items;\nmsg.partitionKey = \"partition3\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 460,
+        "wires": [
+            [
+                "84d9bc7bd695ff2f"
+            ]
+        ]
+    },
+    {
+        "id": "723efad2d7a01667",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 500,
+        "wires": [
+            [
+                "43e00bc74de7714f"
+            ]
+        ]
+    },
+    {
+        "id": "43e00bc74de7714f",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Batch Delete",
+        "func": "// Bulk delete items\n// Requires ID of item\n// msg.partitionKey must match item key\n\nconst items = [\n    { id: \"testItem4\" },\n    { id: \"testItem5\" } \n];\n\nmsg.operation = \"batch-delete\";\nmsg.items = items;\nmsg.partitionKey = \"partition3\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 500,
+        "wires": [
+            [
+                "84d9bc7bd695ff2f"
+            ]
+        ]
+    },
+    {
+        "id": "21f8d5d98ac82c06",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 420,
+        "wires": [
+            [
+                "b2d5cbcbc9788bfb"
+            ]
+        ]
+    },
+    {
+        "id": "b2d5cbcbc9788bfb",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Batch Read",
+        "func": "// Bulk return items \n// Requires ID and partition key of item\n// All item keys and msg.partitionKey must match\n\nconst items = [\n    {id: \"testItem4\",\n    systemId: \"partition3\"}, // Replace key with container partition key\n    {id: \"testItem5\",\n    systemId: \"partition3\"} // Replace key with container partition key\n]\n\nmsg.operation = \"batch-read\";\nmsg.items = items;\nmsg.partitionKey = \"partition3\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 420,
+        "wires": [
+            [
+                "84d9bc7bd695ff2f"
+            ]
+        ]
+    },
+    {
+        "id": "16ff111d140bce29",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 540,
+        "wires": [
+            [
+                "5711b2e317cbc9b1"
+            ]
+        ]
+    },
+    {
+        "id": "5711b2e317cbc9b1",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Batch Upsert",
+        "func": "// Bulk update items if exists or create new if not\n// Requires ID and partition key of item\n// All item keys and msg.partitionKey must match\n\nconst items = [\n    // Existing item, to be updated\n    {\n        id: \"testItem3\",\n        systemId: \"partition3\",\n        description: \"desc2\"\n    },\n    // New item, to be created\n    {\n        id: \"testItem7\",\n        systemId: \"partition3\",\n        description: \"desc1\"\n    }\n];\n\nmsg.operation = \"batch-upsert\";\nmsg.items = items;\nmsg.partitionKey = \"partition3\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 540,
+        "wires": [
+            [
+                "84d9bc7bd695ff2f"
+            ]
+        ]
+    },
+    {
+        "id": "43fd103b37e84c4a",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-cosmos-r2": "1.1.0"
+        }
+    }
+]

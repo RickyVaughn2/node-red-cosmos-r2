@@ -1,0 +1,12 @@
+# > docker-compose up
+
+name: node-red-cosmos-r2-test
+services:
+  node-red:
+    image: nodered/node-red:latest
+    container_name: node-red-cosmos-r2-test
+    ports:
+      - "1880:1880"
+    volumes:
+      - ${NODERED_DIRECTORY}:/data
+      - ${MODULE_DIRECTORY}:/data/node_modules/node-red-cosmos-r2
