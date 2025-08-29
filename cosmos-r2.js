@@ -1,4 +1,4 @@
-const { CosmosClient } = require("@azure/cosmos");
+const { CosmosClient, BulkOperationType } = require("@azure/cosmos");
 
 module.exports = function (RED) {
   function CosmosR2Node(config) {
@@ -64,18 +64,152 @@ module.exports = function (RED) {
             break;
 
           case "update":
-            const { resource: updatedItem } = await container.item(item.id).replace(item);
+            if (!msg.partitionKey) {
+              node.error("Operation 'update' requires a partitionKey in msg.partitionKey");
+              return;
+            }
+            const { resource: updatedItem } = await container.item(item.id, msg.partitionKey).replace(item);
             msg.payload = updatedItem;
             break;
 
           case "delete":
-            const { resource: deletedItem } = await container.item(item.id).delete();
+            if (!msg.partitionKey) {
+              node.error("Operation 'delete' requires a partitionKey in msg.partitionKey");
+              return;
+            }
+            const { resource: deletedItem } = await container.item(item.id, msg.partitionKey).delete();
             msg.payload = deletedItem;
             break;
 
           case "upsert":
             const { resource: upsertedItem } = await container.items.upsert(item);
             msg.payload = upsertedItem;
+            break;
+
+          case "batch-create":
+            if (!Array.isArray(msg.items)) {
+              node.error("batch-create requires an array of items in msg.items");
+              return;
+            }
+            if (!msg.partitionKey) {
+              node.error("batch-create requires a partitionKey in msg.partitionKey");
+              return;
+            }
+            try {
+              const operations = msg.items.map(item => ({
+                operationType: BulkOperationType.Create,
+                resourceBody: item
+              }));
+              const response = await container.items.batch(operations, msg.partitionKey);
+              msg.payload = response;
+            } catch (error) {
+              node.error("Batch create failed: " + error.message);
+              return;
+            }
+            break;
+
+          case "batch-upsert":
+            if (!Array.isArray(msg.items)) {
+              node.error("batch-upsert requires an array of items in msg.items");
+              return;
+            }
+            if (!msg.partitionKey) {
+              node.error("batch-upsert requires a partitionKey in msg.partitionKey");
+              return;
+            }
+            try {
+              const operations = msg.items.map(item => ({
+                operationType: BulkOperationType.Upsert,
+                resourceBody: item
+              }));
+              const response = await container.items.batch(operations, msg.partitionKey);
+              msg.payload = response;
+            } catch (error) {
+              node.error("Batch upsert failed: " + error.message);
+              return;
+            }
+            break;
+
+          case "batch-update":
+            if (!Array.isArray(msg.items)) {
+              node.error("batch-update requires an array of items in msg.items");
+              return;
+            }
+            if (!msg.partitionKey) {
+              node.error("batch-update requires a partitionKey in msg.partitionKey");
+              return;
+            }
+            try {
+              for (const item of msg.items) {
+                if (!item.id) {
+                  throw new Error(`Item missing id field: ${JSON.stringify(item)}`);
+                }
+              }
+              const operations = msg.items.map(item => ({
+                operationType: BulkOperationType.Replace,
+                id: item.id,
+                resourceBody: item
+              }));
+              const response = await container.items.batch(operations, msg.partitionKey);
+              msg.payload = response;
+            } catch (error) {
+              node.error("Batch update failed: " + error.message);
+              return;
+            }
+            break;
+
+          case "batch-delete":
+            if (!Array.isArray(msg.items)) {
+              node.error("batch-delete requires an array of items in msg.items");
+              return;
+            }
+            if (!msg.partitionKey) {
+              node.error("batch-delete requires a partitionKey in msg.partitionKey");
+              return;
+            }
+            try {
+              for (const item of msg.items) {
+                if (!item.id) {
+                  throw new Error(`Item missing id field: ${JSON.stringify(item)}`);
+                }
+              }
+              const operations = msg.items.map(item => ({
+                operationType: BulkOperationType.Delete,
+                id: item.id
+              }));
+              const response = await container.items.batch(operations, msg.partitionKey);
+              msg.payload = response;
+            } catch (error) {
+              node.error("Batch delete failed: " + error.message);
+              return;
+            }
+            break;
+
+          case "batch-read":
+            if (!Array.isArray(msg.items)) {
+              node.error("batch-read requires an array of items with id fields in msg.items");
+              return;
+            }
+            if (!msg.partitionKey) {
+              node.error("batch-read requires a partitionKey in msg.partitionKey");
+              return;
+            }
+            try {
+              for (const item of msg.items) {
+                if (!item.id) {
+                  throw new Error(`Item missing id field: ${JSON.stringify(item)}`);
+                }
+              }
+              const operations = msg.items.map(item => ({
+                operationType: BulkOperationType.Read,
+                id: item.id
+              }));
+              const response = await container.items.batch(operations, msg.partitionKey);
+              msg.payload = response;
+            } catch (error) {
+              node.error("Batch read failed: " + error.message);
+              return;
+            }
             break;
 
           default:

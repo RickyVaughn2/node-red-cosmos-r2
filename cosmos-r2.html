@@ -45,7 +45,7 @@
   
   <script type="text/html" data-help-name="cosmos-r2">
     <h3>Description</h3>
-    <p>A Node-RED custom node that connects to a Cosmos DB and performs create, update, read, delete, and upsert operations.</p>
+    <p>A Node-RED custom node that connects to a Cosmos DB and performs create, update, read, delete, and upsert operations. Supports both single item and bulk operations.</p>
     
     <h3>Configuration</h3>
     <ul>
@@ -59,15 +59,27 @@
     <h3>Input</h3>
     <p>The input message must contain the following properties:</p>
     <ul>
-      <li><b>operation</b>: The type of operation to perform, either "create", "read", "update", "delete", or "upsert".</li>
-      <li><b>item</b>: (Optional) The item to create, update, delete, or upsert. Required for "create", "update", "delete", and "upsert" operations.</li>
+      <li><b>operation</b>: The type of operation to perform:
+        <ul>
+          <li>Single operations: "create", "read", "update", "delete", "upsert"</li>
+          <li>Batch operations: "batch-create", "batch-upsert", "batch-update", "batch-delete", "batch-read"</li>
+        </ul>
+      </li>
+      <li><b>item</b>: The item to create, update, delete, or upsert. Required for single item operations, excluding "read", which will return all items in the container.</li>
+      <li><b>items</b>: An array of items for batch operations. Required for all batch operations.</li>
+      <li><b>partitionKey</b>: The partition key value for batch operations. Required for all batch operations. All items in a batch must belong to the same partition.</li>
       <li><b>query</b>: (Optional) A query to filter items for "read" operation. If not provided, all items will be retrieved.</li>
     </ul>
   
     <h3>Output</h3>
     <p>The output message will contain the following property:</p>
     <ul>
-      <li><b>payload</b>: The result of the operation, such as created, read, updated, deleted, or upserted items.</li>
+      <li><b>payload</b>: 
+        <ul>
+          <li>For single operations: The result item (created, read, updated, deleted, or upserted items)</li>
+          <li>For batch operations: The bulk operations response array from Cosmos DB SDK with individual operation results</li>
+        </ul>
+      </li>
     </ul>
   
     <h3>Examples</h3>
@@ -115,6 +127,65 @@
         "id": "1",
         "name": "Upserted Item"
       }
+    }
+    </pre>
+    
+    <h3>Batch Operation Examples</h3>
+    <p>Batch create items:</p>
+    <pre>
+    {
+      "operation": "batch-create",
+      "partitionKey": "category-A",
+      "items": [
+        { "id": "1", "name": "Item 1", "category": "category-A" },
+        { "id": "2", "name": "Item 2", "category": "category-A" },
+        { "id": "3", "name": "Item 3", "category": "category-A" }
+      ]
+    }
+    </pre>
+    <p>Batch upsert items:</p>
+    <pre>
+    {
+      "operation": "batch-upsert",
+      "partitionKey": "category-A",
+      "items": [
+        { "id": "1", "name": "Updated Item 1", "category": "category-A" },
+        { "id": "4", "name": "New Item 4", "category": "category-A" }
+      ]
+    }
+    </pre>
+    <p>Batch update items:</p>
+    <pre>
+    {
+      "operation": "batch-update",
+      "partitionKey": "category-A",
+      "items": [
+        { "id": "1", "name": "Updated Item 1", "status": "active", "category": "category-A" },
+        { "id": "2", "name": "Updated Item 2", "status": "inactive", "category": "category-A" }
+      ]
+    }
+    </pre>
+    <p>Batch delete items:</p>
+    <pre>
+    {
+      "operation": "batch-delete",
+      "partitionKey": "category-A",
+      "items": [
+        { "id": "1" },
+        { "id": "2" }
+      ]
+    }
+    </pre>
+    <p>Batch read multiple items by ID:</p>
+    <pre>
+    {
+      "operation": "batch-read",
+      "partitionKey": "category-A",
+      "items": [
+        { "id": "1" },
+        { "id": "2" },
+        { "id": "3" }
+      ]
     }
     </pre>
   </script>

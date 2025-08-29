@@ -1,27 +1,25 @@
 {
     "name": "node-red-cosmos-r2",
-    "version": "1.0.3",
+    "version": "2.0.0",
     "description": "A Node-RED custom node that connects to a Cosmos DB and performs create, update, read, delete, and upsert operations.",
     "main": "cosmos-r2.js",
     "keywords": [
-      "node-red",
-      "cosmos",
-      "database",
-      "r2"
+        "node-red",
+        "cosmos",
+        "database",
+        "r2"
     ],
     "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "Ricky Vaughn 2 <rickyvaughn2@gmail.com>",
     "license": "GPL 3.0",
     "dependencies": {
-      "@azure/cosmos": "~3.9.0",
-      "node-red": "^2.1.4"
+        "@azure/cosmos": "~4.5.0"
     },
     "node-red": {
-      "nodes": {
-        "cosmos-r2": "cosmos-r2.js"
-      }
+        "nodes": {
+            "cosmos-r2": "cosmos-r2.js"
+        }
     }
-  }
-  
+}
